@@ -16,6 +16,7 @@ class Note(db.Model):
     @property
     def serialize(self):
        return {
+           'id': self.id,
            'title': self.title,
            'content': self.content
        }
