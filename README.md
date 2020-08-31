@@ -14,6 +14,7 @@
      app$ python3 -m venv venv
      app$ source venv/bin/activate
      (venv) app$ pip install -r requirements.txt
+     (venv) app$ python app.py
      ```
 
    2.2 from the second
