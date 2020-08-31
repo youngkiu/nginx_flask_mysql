@@ -12,3 +12,10 @@ class Note(db.Model):
     def __init__(self, title, content):
         self.title = title
         self.content = content
+
+    @property
+    def serialize(self):
+       return {
+           'title': self.title,
+           'content': self.content
+       }

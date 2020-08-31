@@ -1,4 +1,16 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import (
+    Flask,
+    render_template,
+    request,
+    redirect,
+    url_for,
+    jsonify,
+    abort
+)
+from flask_restplus import (
+    Api,
+    Resource
+)
 from config import SQLALCHEMY_DATABASE_URI, SECRET_KEY
 from models import db, Note
 
@@ -10,6 +22,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = SQLALCHEMY_DATABASE_URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 db.init_app(app)
+
+api = Api(app=app)
+name_space = api.namespace('api', description='Main APIs')
 
 
 @app.route('/add', methods=['POST', 'GET'])
@@ -48,6 +63,51 @@ def delete(id):
     db.session.commit()
 
     return redirect(url_for('index'))
+
+
+@name_space.route('')
+class ApiNote(Resource):
+    def get(self):
+        note = Note.query.all()
+        return jsonify(json_list=[i.serialize for i in note])
+
+    def post(self):
+        req_data = request.get_json()
+        note = Note(req_data['title'], req_data['content'])
+        db.session.add(note)
+        db.session.commit()
+        return jsonify({'id': note.id})
+
+
+@name_space.route('/<id>')
+@name_space.doc(params={'id': 'An ID'})
+class ApiNoteId(Resource):
+    def get(self, id):
+        note = Note.query.get(id)
+        if note:
+            return jsonify(note.serialize)
+
+        abort(status=404, description='Not exist ID(%s)' % id)
+
+    def put(self, id):
+        note = Note.query.get(id)
+        req_data = request.get_json()
+        if note:
+            note.title = req_data['title']
+            note.content = req_data['content']
+            db.session.commit()
+            return jsonify({'result': 'updated'})
+
+        abort(status=404, description='Not exist ID(%s)' % id)
+
+    def delete(self, id):
+        note = Note.query.get(id)
+        if note:
+            db.session.delete(note)
+            db.session.commit()
+            return jsonify({'result': 'deleted'})
+
+        abort(status=404, description='Not exist ID(%s)' % id)
 
 
 if __name__ == '__main__':
