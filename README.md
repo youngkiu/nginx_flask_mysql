@@ -13,7 +13,11 @@
      ```shell
      app$ python3 -m venv venv
      app$ source venv/bin/activate
+     (venv) app$ pip install --upgrade pip
      (venv) app$ pip install -r requirements.txt
+     (venv) app$ python manage.py db init
+     (venv) app$ python manage.py db migrate
+     (venv) app$ python manage.py db upgrade
      (venv) app$ python app.py
      ```
 

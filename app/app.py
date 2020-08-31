@@ -37,6 +37,7 @@ def edit(id):
         note.content = request.form['content']
         db.session.commit()
         return redirect(url_for('index'))
+
     return render_template('edit.html', note=note)
 
 
