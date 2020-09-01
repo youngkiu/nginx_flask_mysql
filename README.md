@@ -32,7 +32,8 @@
 The app code refer to the https://bit.ly/2EMHZ6o code.
 
 ## How to test
-   http://localhost
+**http://localhost**
+
    ```shell
    $ curl -i -X GET http://localhost/api/note
    $ curl -i -X GET http://localhost/api/note/2

@@ -35,7 +35,7 @@ def add():
     return render_template('add.html')
 
 
-@app.route('/', methods=['POST', 'GET'])
+@app.route('/')
 def index():
     note = Note.query.all()
     return render_template('index.html', note=note)
