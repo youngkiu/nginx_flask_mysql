@@ -32,13 +32,13 @@
 The app code refer to the https://bit.ly/2EMHZ6o code.
 
 ## How to test
-
+   http://localhost/note
    ```shell
-   $ curl -i -X GET http://localhost:5000/api
-   $ curl -i -X GET http://localhost:5000/api/2
-   $ curl -i -X POST -H "Content-Type: application/json" -d '{"title": "test", "content": "test123"}' http://localhost:5000/api
-   $ curl -i -X PUT -H "Content-Type: application/json" -d '{"title": "test", "content": "test123"}' http://localhost:5000/api/3
-   $ curl -i -X DELETE http://localhost:5000/api/4
+   $ curl -i -X GET http://localhost/api
+   $ curl -i -X GET http://localhost/api/2
+   $ curl -i -X POST -H "Content-Type: application/json" -d '{"title": "test", "content": "test123"}' http://localhost/api
+   $ curl -i -X PUT -H "Content-Type: application/json" -d '{"title": "test", "content": "test123"}' http://localhost/api/3
+   $ curl -i -X DELETE http://localhost/api/4
    ```
 
 ![swagger_ui](swagger_ui.png)

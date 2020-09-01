@@ -26,7 +26,7 @@ db.init_app(app)
 api = Api(app=app)
 
 
-@app.route('/add', methods=['POST', 'GET'])
+@app.route('/note/add', methods=['POST', 'GET'])
 def add():
     if request.method == 'POST':
         note = Note(request.form['title'], request.form['content'])
@@ -37,13 +37,13 @@ def add():
     return render_template('add.html')
 
 
-@app.route('/')
+@app.route('/note')
 def index():
     note = Note.query.all()
     return render_template('index.html', note=note)
 
 
-@app.route('/edit/<id>', methods=['POST', 'GET'])
+@app.route('/note/edit/<id>', methods=['POST', 'GET'])
 def edit(id):
     note = Note.query.get(id)
     if request.method == 'POST':
@@ -55,7 +55,7 @@ def edit(id):
     return render_template('edit.html', note=note)
 
 
-@app.route('/delete/<id>', methods=['POST', 'GET'])
+@app.route('/note/delete/<id>', methods=['POST', 'GET'])
 def delete(id):
     note = Note.query.get(id)
     db.session.delete(note)
