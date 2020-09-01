@@ -23,10 +23,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 db.init_app(app)
 
-api = Api(app=app)
 
-
-@app.route('/note/add', methods=['POST', 'GET'])
+@app.route('/add', methods=['POST', 'GET'])
 def add():
     if request.method == 'POST':
         note = Note(request.form['title'], request.form['content'])
@@ -37,13 +35,13 @@ def add():
     return render_template('add.html')
 
 
-@app.route('/note')
+@app.route('/', methods=['POST', 'GET'])
 def index():
     note = Note.query.all()
     return render_template('index.html', note=note)
 
 
-@app.route('/note/edit/<id>', methods=['POST', 'GET'])
+@app.route('/edit/<id>', methods=['POST', 'GET'])
 def edit(id):
     note = Note.query.get(id)
     if request.method == 'POST':
@@ -55,7 +53,7 @@ def edit(id):
     return render_template('edit.html', note=note)
 
 
-@app.route('/note/delete/<id>', methods=['POST', 'GET'])
+@app.route('/delete/<id>', methods=['POST', 'GET'])
 def delete(id):
     note = Note.query.get(id)
     db.session.delete(note)
@@ -63,6 +61,8 @@ def delete(id):
 
     return redirect(url_for('index'))
 
+
+api = Api(app, doc='/api')
 
 class ApiNote(Resource):
     def get(self):
@@ -110,8 +110,8 @@ class ApiNoteId(Resource):
         db.session.commit()
         return jsonify({'result': 'deleted'})
 
-api.add_resource(ApiNote, '/api')
-api.add_resource(ApiNoteId, '/api/<id>')
+api.add_resource(ApiNote, '/api/note')
+api.add_resource(ApiNoteId, '/api/note/<id>')
 
 
 if __name__ == '__main__':
