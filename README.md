@@ -4,6 +4,7 @@
 
    ```shell
    $ docker-compose up -d
+   $ docker-compose logs -f
    ```
 
 2. ### Only flask(:5000)
