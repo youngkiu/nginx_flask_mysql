@@ -24,7 +24,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db.init_app(app)
 
 api = Api(app=app)
-name_space = api.namespace('api', description='Main APIs')
 
 
 @app.route('/add', methods=['POST', 'GET'])
@@ -65,7 +64,6 @@ def delete(id):
     return redirect(url_for('index'))
 
 
-@name_space.route('')
 class ApiNote(Resource):
     def get(self):
         note = Note.query.all()
@@ -73,41 +71,47 @@ class ApiNote(Resource):
 
     def post(self):
         req_data = request.get_json()
-        note = Note(req_data['title'], req_data['content'])
-        db.session.add(note)
-        db.session.commit()
-        return jsonify({'id': note.id})
+        if req_data and all(key in req_data for key in ('title', 'content')):
+            note = Note(req_data['title'], req_data['content'])
+            db.session.add(note)
+            db.session.commit()
+            return jsonify({'id': note.id})
 
+        abort(status=400, description='Invalid request data')
 
-@name_space.route('/<id>')
-@name_space.doc(params={'id': 'An ID'})
 class ApiNoteId(Resource):
     def get(self, id):
         note = Note.query.get(id)
-        if note:
-            return jsonify(note.serialize)
+        if not note:
+            abort(status=404, description='Not exist ID(%s)' % id)
 
-        abort(status=404, description='Not exist ID(%s)' % id)
+        return jsonify(note.serialize)
 
     def put(self, id):
         note = Note.query.get(id)
+        if not note:
+            abort(status=404, description='Not exist ID(%s)' % id)
+
         req_data = request.get_json()
-        if note:
+        if req_data and all(key in req_data for key in ('title', 'content')):
             note.title = req_data['title']
             note.content = req_data['content']
             db.session.commit()
             return jsonify({'result': 'updated'})
 
-        abort(status=404, description='Not exist ID(%s)' % id)
+        abort(status=400, description='Invalid request data')
 
     def delete(self, id):
         note = Note.query.get(id)
-        if note:
-            db.session.delete(note)
-            db.session.commit()
-            return jsonify({'result': 'deleted'})
+        if not note:
+            abort(status=404, description='Not exist ID(%s)' % id)
 
-        abort(status=404, description='Not exist ID(%s)' % id)
+        db.session.delete(note)
+        db.session.commit()
+        return jsonify({'result': 'deleted'})
+
+api.add_resource(ApiNote, '/api')
+api.add_resource(ApiNoteId, '/api/<id>')
 
 
 if __name__ == '__main__':
