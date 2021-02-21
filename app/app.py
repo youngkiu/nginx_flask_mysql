@@ -1,16 +1,5 @@
-from flask import (
-    Flask,
-    render_template,
-    request,
-    redirect,
-    url_for,
-    jsonify,
-    abort
-)
-from flask_restplus import (
-    Api,
-    Resource
-)
+from flask import Flask, render_template, request, redirect, url_for, jsonify, abort
+from flask_restx import Api, Resource
 from config import SQLALCHEMY_DATABASE_URI, SECRET_KEY
 from models import db, Note
 
@@ -64,6 +53,8 @@ def delete(id):
 
 api = Api(app, doc='/api')
 
+
+@api.route('/api/note')
 class ApiNote(Resource):
     def get(self):
         note = Note.query.all()
@@ -79,6 +70,9 @@ class ApiNote(Resource):
 
         abort(status=400, description='Invalid request data')
 
+
+@api.route('/api/note/<id>')
+@api.doc(params={'id': 'An ID'})
 class ApiNoteId(Resource):
     def get(self, id):
         note = Note.query.get(id)
@@ -109,9 +103,6 @@ class ApiNoteId(Resource):
         db.session.delete(note)
         db.session.commit()
         return jsonify({'result': 'deleted'})
-
-api.add_resource(ApiNote, '/api/note')
-api.add_resource(ApiNoteId, '/api/note/<id>')
 
 
 if __name__ == '__main__':

@@ -1,11 +1,5 @@
 #!/bin/bash
-if [ ! -e $1 ]; then
-    echo "-- First container startup --"
-    python manage.py db init
-    python manage.py db migrate
-    python manage.py db upgrade
-
-    touch $1
-else
-    echo "-- Not first container startup --"
-fi
+MIGRATIONS_DIR_PATH=$1
+python manage.py db init --directory=$MIGRATIONS_DIR_PATH
+python manage.py db migrate --directory=$MIGRATIONS_DIR_PATH
+python manage.py db upgrade --directory=$MIGRATIONS_DIR_PATH

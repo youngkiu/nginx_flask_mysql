@@ -16,17 +16,15 @@
      app$ source venv/bin/activate
      (venv) app$ pip install --upgrade pip
      (venv) app$ pip install -r requirements.txt
-     (venv) app$ python manage.py db init
-     (venv) app$ python manage.py db migrate
-     (venv) app$ python manage.py db upgrade
-     (venv) app$ python app.py
+     (venv) app$ DEBUG=1 ./migrate.sh $PWD/../db/migrations/
+     (venv) app$ DEBUG=1 python $PWD/app.py
      ```
 
    2.2 from the second
 
      ```shell
      app$ source venv/bin/activate
-     (venv) app$ python app.py
+     (venv) app$ DEBUG=1 python $PWD/app.py
      ```
 
 
